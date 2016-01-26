@@ -117,7 +117,8 @@ void loop() {
 
         pos = map(Xbox.getAnalogHat(LeftHatX, i), -32768, 32767, -256, 255);
         pos2 = map(Xbox.getAnalogHat(LeftHatY, i), -32768, 32767, -256, 255);
-
+        Serial.print("pos: "+pos);
+        Serial.println("pos2: "+pos2);
        /* pos = 1/pos;
 
         v = (256-abs(pos)) * (pos2/256) + pos2;
