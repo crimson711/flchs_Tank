@@ -48,7 +48,7 @@ Adafruit_DCMotor *myMotor = AFMS.getMotor(1);
 Adafruit_DCMotor *myOtherMotor = AFMS.getMotor(3);*/
 
 void setup() {
-  Serial.begin(9600);
+  Serial.begin(115200);
     //Serial.begin(9600);           // set up Serial library at 9600 bps
 #if !defined(__MIPSEL__)
   while (!Serial); // Wait for serial port to connect - used on Leonardo, Teensy and other boards with built-in USB CDC serial connection
