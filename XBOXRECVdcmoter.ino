@@ -48,7 +48,7 @@ Adafruit_DCMotor *myMotor = AFMS.getMotor(1);
 Adafruit_DCMotor *myOtherMotor = AFMS.getMotor(3);*/
 
 void setup() {
-  Serial.begin(115200);
+  Serial.begin(9600);
     //Serial.begin(9600);           // set up Serial library at 9600 bps
 #if !defined(__MIPSEL__)
   while (!Serial); // Wait for serial port to connect - used on Leonardo, Teensy and other boards with built-in USB CDC serial connection
@@ -125,7 +125,17 @@ void loop() {
         w = (256-abs(pos2)) * (pos/256) + pos;
         r = (v+w)/2;
         l = (v-w)/2;
+        
+        /*if(r==l){
+          digitalWrite(BRAKE_A, LOW);  // setting brake LOW disable motor brake
+            digitalWrite(DIR_A, HIGH);   // setting direction to HIGH the motor will spin forward
 
+            analogWrite(PWM_A, r); 
+            analogWrite(PWM_B, l); 
+        }*/
+        
+        
+        
         if (r>0){
             digitalWrite(BRAKE_A, LOW);  // setting brake LOW disable motor brake
             digitalWrite(DIR_A, HIGH);   // setting direction to HIGH the motor will spin forward
