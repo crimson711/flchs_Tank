@@ -41,7 +41,6 @@ int v = 0;
 Adafruit_MotorShield AFMS = Adafruit_MotorShield(); 
 // Or, create it with a different I2C address (say for stacking)
 // Adafruit_MotorShield AFMS = Adafruit_MotorShield(0x61); 
-
 // Select which 'port' M1, M2, M3 or M4. In this case, M1
 Adafruit_DCMotor *myMotor = AFMS.getMotor(1);
 // You can also make another motor on port M2
@@ -115,8 +114,8 @@ void loop() {
         }
 
 
-        pos = map(Xbox.getAnalogHat(LeftHatX, i), -32768, 32767, -256, 255);
-        pos2 = map(Xbox.getAnalogHat(LeftHatY, i), -32768, 32767, -256, 255);
+        pos = map(Xbox.getAnalogHat(LeftHatX, i), -32768, 32767, -255, 255);
+        pos2 = map(Xbox.getAnalogHat(LeftHatY, i), -32768, 32767, -255, 255);
         
         if(pos>0){
           digitalWrite(DIR_A, HIGH);   // setting direction to HIGH the motor will spin forward
@@ -125,26 +124,35 @@ void loop() {
           digitalWrite(DIR_B, HIGH);   // setting direction to HIGH the motor will spin forward
         }
                 if(pos<0){
-          digitalWrite(DIR_A,LOW);   // setting direction to HIGH the motor will spin forward
+          digitalWrite(DIR_A, LOW);   // setting direction to HIGH the motor will spin forward
         }
                 if(pos<0){
           digitalWrite(DIR_B, LOW);   // setting direction to HIGH the motor will spin forward
         }
         
-        Serial.print("pos: "+pos);
-        Serial.println("pos2: "+pos2);
+        //Serial.print("pos: "+pos);
+        //Serial.println("pos2: "+pos2);
         
        // pos = 1/pos;
 
-        v = (256-abs(pos)) * (pos2/256) + pos2;
+       /* v = (256-abs(pos)) * (pos2/256) + pos2;
         w = (256-abs(pos2)) * (pos/256) + pos;
         r = (v+w)/2;
-        l = (v-w)/2;
-        
+        l = (v-w)/2;*/
+
+        Serial.print("Speed: ");
+        Serial.print(pos);
+        Serial.print(" and ");
+        Serial.print(pos);
+        if(pos>0){
+        Serial.println("\nDirection: Forward");
+        }
+        else{
+          Serial.println("\nDirection: Backward");
+        }
         /*if(r==l){
           digitalWrite(BRAKE_A, LOW);  // setting brake LOW disable motor brake
             digitalWrite(DIR_A, HIGH);   // setting direction to HIGH the motor will spin forward
-
             analogWrite(PWM_A, r); 
             analogWrite(PWM_B, l); 
         }*/
@@ -154,36 +162,30 @@ void loop() {
         /*if (r>0){
             digitalWrite(BRAKE_A, LOW);  // setting brake LOW disable motor brake
             digitalWrite(DIR_A, HIGH);   // setting direction to HIGH the motor will spin forward
-
             analogWrite(PWM_A, r); 
           
         }
         else if (r<0){
            digitalWrite(BRAKE_A, LOW);  // setting againg the brake LOW to disable motor brake
            digitalWrite(DIR_A, LOW);    // now change the direction to backward setting LOW the DIR_A pin
-
            analogWrite(PWM_A, r);     // Set the speed of the motor
         }
         else {
            digitalWrite(BRAKE_A, HIGH);
         }
-
          if (l>0){
           digitalWrite(BRAKE_B, LOW);  // setting brake LOW disable motor brake
           digitalWrite(DIR_B, LOW);   // setting direction to HIGH the motor will spin forward
-
           analogWrite(PWM_B, l);
         }
         else if (l<0){
           digitalWrite(BRAKE_B, LOW);  // setting againg the brake LOW to disable motor brake
           digitalWrite(DIR_B, HIGH);    // now change the direction to backward setting LOW the DIR_A pin
-
           analogWrite(PWM_B, l);     // Set the speed of the motor
         }
         else {
           digitalWrite(BRAKE_A, HIGH);
         }
-
      /*   
          if (Xbox.getAnalogHat(LeftHatX, i) < 32639){
             if (Xbox.getAnalogHat(LeftHatX, i) > -32640){
@@ -204,7 +206,6 @@ void loop() {
                 myMotor->run(FORWARD);
               myOtherMotor->run(FORWARD);
          }
-
          if (Xbox.getAnalogHat(LeftHatY, i) <= -2048){
          pos = map(Xbox.getAnalogHat(LeftHatY, i), 0, -32768, 0, 255);
           Serial.print(F("pos: "));
@@ -215,7 +216,6 @@ void loop() {
                 myMotor->run(BACKWARD);
               myOtherMotor->run(BACKWARD);
          }
-
          
          if (Xbox.getAnalogHat(LeftHatX, i) > 2048 && Xbox.getAnalogHat(LeftHatY, i) > -2048 && Xbox.getAnalogHat(LeftHatY, i) < 2047){
          pos2 = map(Xbox.getAnalogHat(LeftHatX, i), 0, 32767, 0, 255);
@@ -227,7 +227,6 @@ void loop() {
                 myMotor->run(BACKWARD);
               myOtherMotor->run(FORWARD);
          }
-
          
          if (Xbox.getAnalogHat(LeftHatX, i) < -2048 && Xbox.getAnalogHat(LeftHatY, i) > -2048 && Xbox.getAnalogHat(LeftHatY, i) < 2047){
          pos2 = map(Xbox.getAnalogHat(LeftHatX, i), 0, 32767, 0, 255);
@@ -239,7 +238,6 @@ void loop() {
                 myMotor->run(FORWARD);
               myOtherMotor->run(BACKWARD);
          }
-
          if (Xbox.getAnalogHat(LeftHatX, i) > 2047 && Xbox.getAnalogHat(LeftHatY, i) <= -2048 && Xbox.getAnalogHat(LeftHatY, i) >= 2047){
          pos2 = map(Xbox.getAnalogHat(LeftHatX, i), 0, 32767, 0, 255);
           Serial.print(F("pos: "));
@@ -250,7 +248,6 @@ void loop() {
                 myMotor->run(FORWARD);
               myOtherMotor->run(FORWARD);
          }
-
          if (Xbox.getAnalogHat(LeftHatX, i) < -2048 && Xbox.getAnalogHat(LeftHatY, i) <= -2048 && Xbox.getAnalogHat(LeftHatY, i) >= 2047){
          pos2 = map(Xbox.getAnalogHat(LeftHatX, i), 0, -32768, 0, 255);
           Serial.print(F("pos: "));
