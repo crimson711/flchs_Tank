@@ -121,13 +121,13 @@ void loop() {
           digitalWrite(DIR_A, HIGH);   // setting direction to HIGH the motor will spin forward
         }
                 if(pos>0){
-          digitalWrite(DIR_B, HIGH);   // setting direction to HIGH the motor will spin forward
+          digitalWrite(DIR_B, LOW);   // setting direction to HIGH the motor will spin forward
         }
                 if(pos<0){
           digitalWrite(DIR_A, LOW);   // setting direction to HIGH the motor will spin forward
         }
                 if(pos<0){
-          digitalWrite(DIR_B, LOW);   // setting direction to HIGH the motor will spin forward
+          digitalWrite(DIR_B, HIGH);   // setting direction to HIGH the motor will spin forward
         }
         
         //Serial.print("pos: "+pos);
