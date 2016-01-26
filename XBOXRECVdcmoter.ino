@@ -117,9 +117,24 @@ void loop() {
 
         pos = map(Xbox.getAnalogHat(LeftHatX, i), -32768, 32767, -256, 255);
         pos2 = map(Xbox.getAnalogHat(LeftHatY, i), -32768, 32767, -256, 255);
+        
+        if(pos>0){
+          digitalWrite(DIR_A, HIGH);   // setting direction to HIGH the motor will spin forward
+        }
+                if(pos>0){
+          digitalWrite(DIR_B, HIGH);   // setting direction to HIGH the motor will spin forward
+        }
+                if(pos<0){
+          digitalWrite(DIR_A,LOW);   // setting direction to HIGH the motor will spin forward
+        }
+                if(pos<0){
+          digitalWrite(DIR_B, LOW);   // setting direction to HIGH the motor will spin forward
+        }
+        
         Serial.print("pos: "+pos);
         Serial.println("pos2: "+pos2);
-       /* pos = 1/pos;
+        
+       // pos = 1/pos;
 
         v = (256-abs(pos)) * (pos2/256) + pos2;
         w = (256-abs(pos2)) * (pos/256) + pos;
@@ -136,7 +151,7 @@ void loop() {
         
         
         
-        if (r>0){
+        /*if (r>0){
             digitalWrite(BRAKE_A, LOW);  // setting brake LOW disable motor brake
             digitalWrite(DIR_A, HIGH);   // setting direction to HIGH the motor will spin forward
 
