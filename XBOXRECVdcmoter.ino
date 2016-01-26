@@ -144,13 +144,13 @@ void loop() {
 
          if (l>0){
           digitalWrite(BRAKE_B, LOW);  // setting brake LOW disable motor brake
-          digitalWrite(DIR_B, HIGH);   // setting direction to HIGH the motor will spin forward
+          digitalWrite(DIR_B, LOW);   // setting direction to HIGH the motor will spin forward
 
           analogWrite(PWM_B, l);
         }
         else if (l<0){
           digitalWrite(BRAKE_B, LOW);  // setting againg the brake LOW to disable motor brake
-          digitalWrite(DIR_B, LOW);    // now change the direction to backward setting LOW the DIR_A pin
+          digitalWrite(DIR_B, HIGH);    // now change the direction to backward setting LOW the DIR_A pin
 
           analogWrite(PWM_B, l);     // Set the speed of the motor
         }
