@@ -34,6 +34,10 @@ int l = 0;
 int a = 0;
 int b = 0;
 int c = 0;
+int posX1=0;
+int posY1=0;
+int posX2=0;
+int posY2=0;
 //int w = 0;
 //int v = 0;
 
@@ -149,24 +153,110 @@ void loop() {
         else{
           Serial.println("\nDirection: Backward");
         }
+        //mathew's code
+        
 
         a = Xbox.getAnalogHat(LeftHatX, i);
         b = Xbox.getAnalogHat(LeftHatY, i);
-        c = (a.pow(2) + b.pow(2)).sqrt;
+        c = (int) (sqrt(pow(a, 2) + pow(b, 2)));
         Serial.print("Speed: ");
         Serial.println(c/128);
         
-        if(b>7500){
+        r=round(c/128);
+        l=round(b/128);
+
+        //Must Fix Down-Right and Up-Left
+
+          if (a > 4095){                             //Stick is pointed right
+            if (b > 4095){
+              digitalWrite(BRAKE_A, LOW);
+              digitalWrite(BRAKE_B, LOW);
+              digitalWrite(DIR_A, HIGH);
+              digitalWrite(DIR_B, LOW);
+              analogWrite(PWM_A, r); 
+              analogWrite(PWM_B, l);
+            }
+            else if (b < -4096){
+              digitalWrite(BRAKE_A, LOW);
+              digitalWrite(BRAKE_B, LOW);
+              digitalWrite(DIR_A, LOW);
+              digitalWrite(DIR_B, HIGH);
+              analogWrite(PWM_A, r); 
+              analogWrite(PWM_B, l);
+            }
+            else{                                   //Tank turn Right
+              digitalWrite(BRAKE_A, LOW);
+              digitalWrite(BRAKE_B, LOW);
+              digitalWrite(DIR_A, LOW);
+              digitalWrite(DIR_B, LOW);
+              analogWrite(PWM_A, round(a/128)); 
+              analogWrite(PWM_B, round(a/128));
+            }
+          }
+          else if (a < -4096){                      //Stick is pointed left
+            if (b > 4095){
+              digitalWrite(BRAKE_A, LOW);
+              digitalWrite(BRAKE_B, LOW);
+              digitalWrite(DIR_A, HIGH);
+              digitalWrite(DIR_B, LOW);
+              analogWrite(PWM_A, r); 
+              analogWrite(PWM_B, l);
+            }
+            else if (b < -4096){
+              digitalWrite(BRAKE_A, LOW);
+              digitalWrite(BRAKE_B, LOW);
+              digitalWrite(DIR_A, LOW);
+              digitalWrite(DIR_B, HIGH);
+              analogWrite(PWM_A, r); 
+              analogWrite(PWM_B, l);
+            }
+            else{                                   //Tank turn Left
+              digitalWrite(BRAKE_A, LOW);
+              digitalWrite(BRAKE_B, LOW);
+              digitalWrite(DIR_A, HIGH);
+              digitalWrite(DIR_B, HIGH);
+              analogWrite(PWM_A, round(a/128)); 
+              analogWrite(PWM_B, round(a/128));
+            }
+          }
+          else{                                   //Stick pointed Up, Forwards
+            if(b > 4095){
+              digitalWrite(BRAKE_A, LOW);
+              digitalWrite(BRAKE_B, LOW);
+              digitalWrite(DIR_A, HIGH);
+              digitalWrite(DIR_B, LOW);
+              analogWrite(PWM_A, round(b/128)); 
+              analogWrite(PWM_B, round(b/128));
+            }
+            else if(b < -4096){                           //Stick pointed Down, Backwards
+              digitalWrite(BRAKE_A, LOW);
+              digitalWrite(BRAKE_B, LOW);
+              digitalWrite(DIR_A, LOW);
+              digitalWrite(DIR_B, HIGH);
+              analogWrite(PWM_A, round(b/128)); 
+              analogWrite(PWM_B, round(b/128));
+            }
+            else{                              //Stick is in the centre, Stop
+              digitalWrite(BRAKE_A, HIGH);
+              digitalWrite(BRAKE_B, HIGH);
+            }
+          }
+        
+        /*if(b>3000){
+          digitalWrite(BRAKE_A, LOW);
+          digitalWrite(BRAKE_B, LOW);
           digitalWrite(DIR_A, HIGH);
-          digitalWrite(DIR_B, HIGH);
+          digitalWrite(DIR_B, LOW);
         }
-        else if(b<-7500){
+        else if(b<-3000){
+         digitalWrite(BRAKE_A, LOW);
+         digitalWrite(BRAKE_B, LOW);
          digitalWrite(DIR_A, LOW);
-         digitalWrite(DIR_B, LOW);
+         digitalWrite(DIR_B, HIGH);
         }
         else{
-         digitalWrite(DIR_A, RELEASE);
-         digitalWrite(DIR_B, RELEASE);
+        digitalWrite(BRAKE_A, HIGH);
+        digitalWrite(BRAKE_B, HIGH);
         }
         
         if(a>=32767-512){
@@ -179,17 +269,77 @@ void loop() {
         }
         if(b>=32767-512){
           digitalWrite(DIR_A, HIGH);
-          digitalWrite(DIR_B, HIGH);
+          digitalWrite(DIR_B, LOW);
         }
         if(b<=-32767+512){
           digitalWrite(DIR_A, LOW);
-          digitalWrite(DIR_B, LOW);
+          digitalWrite(DIR_B, HIGH);
         }
+
+        r=(c-a)/128;
+        l=(c-b)/128;
         
-        analogWrite(PWM_A, b); 
-        analogWrite(PWM_B, a);
+        analogWrite(PWM_A, r); 
+        analogWrite(PWM_B, l);
         
-        
+
+        //chris code
+
+  /*     
+        posX1 = map(Xbox.getAnalogHat(RightHatX, i), -32768, 32767, -255, 255);
+        posY1 = map(Xbox.getAnalogHat(RightHatY, i), -32768, 32767, 255, -255);
+        posY2 = map(Xbox.getAnalogHat(RightHatY, i), -32768, 32767, -255, 255);
+
+        analogWrite(PWM_A, (-posX1+posY1)); 
+        analogWrite(PWM_B, (-posX1+posY1));
+*/
+  /*
+        int x_axis = AnalogRead(0); // value of X-Axis joystick (0-1023, 512 = centered)
+  int y_axis = AnalogRead(1); // value of Y-Axis joystick (0-1023, 512 = centered)
+
+  // filter out a centered joystick - no action
+  if (x_axis < 510 || x_axis > 514) {
+    if (y_axis < 510 || y_axis > 514) {
+      // Map values from potentiometers to a smaller range for the PWM motor controllers (0-255)
+      x_axis = map(x_axis, 0, 1023, 0, 255);
+      y_axis = map(y_axis, 0, 1023, 0, 255);
+
+      int ly_axis = y_axis;
+      int ry_axis = y_axis;
+
+      if (x_axis < 126) { // turning left, so slow-down left track
+        if (y_axis > 130) { // moving forward
+          ly_axis -= (255 - x_axis); // decreasing the value - moving it closer to the center-point - slows it down
+        }
+
+        if (y_axis < 126) { // moving in reverse
+          ly_axis += (255 - x_axis); // increasing the value - moving it closer to the center-point - slows it down
+        }
+      }
+
+      if (x_axis > 130) { // turning right, so slow-down right track
+        if (y_axis > 130) { // moving forward
+          ry_axis -= (255 - x_axis); // decreasing the value - moving it closer to the center-point - slows it down
+        }
+
+        if (y_axis < 126) { // moving in reverse
+          ry_axis += (255 - x_axis); // increasing the value - moving it closer to the center-point - slows it down
+        }
+      }
+
+      l_track.write(ly_axis); // here we assume that values > 128 = forward, and < 128 = reverse for the left track motor controller
+      r_track.write(ry_axis); // here we assume that values > 128 = forward, and < 128 = reverse for the right track motor controller
+    }
+  }
+
+  // center both PWM values if the joystick is centered (bringing both motor controllers and tracks to a stop)
+  if (x_axis >= 510 || x_axis <= 514) {
+    if (y_axis >= 510 || y_axis <= 514) {
+      l_track.write(128);
+      r_track.write(128);
+ 
+         */
+        //end
         /*if(r==l){
           digitalWrite(BRAKE_A, LOW);  // setting brake LOW disable motor brake
             digitalWrite(DIR_A, HIGH);   // setting direction to HIGH the motor will spin forward
