@@ -156,6 +156,40 @@ void loop() {
         Serial.print("Speed: ");
         Serial.println(c/128);
         
+        if(b>7500){
+          digitalWrite(DIR_A, HIGH);
+          digitalWrite(DIR_B, HIGH);
+        }
+        else if(b<-7500){
+         digitalWrite(DIR_A, LOW);
+         digitalWrite(DIR_B, LOW);
+        }
+        else{
+         digitalWrite(DIR_A, RELEASE);
+         digitalWrite(DIR_B, RELEASE);
+        }
+        
+        if(a>=32767-512){
+          digitalWrite(DIR_A, LOW);
+          digitalWrite(DIR_B, HIGH);
+        }
+        if(a<=-32768+512){
+          digitalWrite(DIR_A, HIGH);
+          digitalWrite(DIR_B, LOW);
+        }
+        if(b>=32767-512){
+          digitalWrite(DIR_A, HIGH);
+          digitalWrite(DIR_B, HIGH);
+        }
+        if(b<=-32767+512){
+          digitalWrite(DIR_A, LOW);
+          digitalWrite(DIR_B, LOW);
+        }
+        
+        analogWrite(PWM_A, b); 
+        analogWrite(PWM_B, a);
+        
+        
         /*if(r==l){
           digitalWrite(BRAKE_A, LOW);  // setting brake LOW disable motor brake
             digitalWrite(DIR_A, HIGH);   // setting direction to HIGH the motor will spin forward
