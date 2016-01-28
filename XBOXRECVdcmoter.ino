@@ -31,8 +31,11 @@ int pos2 = 0;
 int i = 0;
 int r = 0;
 int l = 0;
-int w = 0;
-int v = 0;
+int a = 0;
+int b = 0;
+int c = 0;
+//int w = 0;
+//int v = 0;
 
 /*#include <Wire.h>
 #include <Adafruit_MotorShield.h>
@@ -119,14 +122,10 @@ void loop() {
         
         if(pos>0){
           digitalWrite(DIR_A, HIGH);   // setting direction to HIGH the motor will spin forward
-        }
-                if(pos>0){
           digitalWrite(DIR_B, LOW);   // setting direction to HIGH the motor will spin forward
         }
                 if(pos<0){
           digitalWrite(DIR_A, LOW);   // setting direction to HIGH the motor will spin forward
-        }
-                if(pos<0){
           digitalWrite(DIR_B, HIGH);   // setting direction to HIGH the motor will spin forward
         }
         
@@ -150,6 +149,13 @@ void loop() {
         else{
           Serial.println("\nDirection: Backward");
         }
+
+        a = Xbox.getAnalogHat(LeftHatX, i);
+        b = Xbox.getAnalogHat(LeftHatY, i);
+        c = (a.pow(2) + b.pow(2)).sqrt;
+        Serial.print("Speed: ");
+        Serial.println(c);
+        
         /*if(r==l){
           digitalWrite(BRAKE_A, LOW);  // setting brake LOW disable motor brake
             digitalWrite(DIR_A, HIGH);   // setting direction to HIGH the motor will spin forward
