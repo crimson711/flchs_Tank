@@ -154,7 +154,7 @@ void loop() {
         b = Xbox.getAnalogHat(LeftHatY, i);
         c = (a.pow(2) + b.pow(2)).sqrt;
         Serial.print("Speed: ");
-        Serial.println(c);
+        Serial.println(c/128);
         
         /*if(r==l){
           digitalWrite(BRAKE_A, LOW);  // setting brake LOW disable motor brake
