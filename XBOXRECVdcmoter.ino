@@ -122,7 +122,7 @@ void loop() {
         }
 
 
-        pos = map(Xbox.getAnalogHat(LeftHatX, i), -32768, 32767, -255, 255);
+        /*pos = map(Xbox.getAnalogHat(LeftHatX, i), -32768, 32767, -255, 255);
         pos2 = map(Xbox.getAnalogHat(LeftHatY, i), -32768, 32767, -255, 255);
         
         if(pos>0){
@@ -159,7 +159,7 @@ void loop() {
 
         a = Xbox.getAnalogHat(LeftHatX, i);
         b = Xbox.getAnalogHat(LeftHatY, i);
-        c = (int) (sqrt(pow(a, 2) + pow(b, 2)));
+        c = (int) (sqrt(pow(abs(a), 2) + pow(abs(b), 2)));
         Serial.print("Speed: ");
         Serial.println(c/128);
         
@@ -169,16 +169,50 @@ void loop() {
 
         //Must Fix Down-Right and Up-Left
 
+        if (a > 4095 && b >= -4096 && b <= 4095){
+          digitalWrite(BRAKE_A, LOW);
+              digitalWrite(BRAKE_B, LOW);
+              digitalWrite(DIR_A, HIGH);
+              digitalWrite(DIR_B, LOW);
+              analogWrite(PWM_A, r); 
+              analogWrite(PWM_B, r);
+        }
+        else if (a < -4096 && b >= -4096 && b <= 4095){
+          digitalWrite(BRAKE_A, LOW);
+              digitalWrite(BRAKE_B, LOW);
+              digitalWrite(DIR_A, HIGH);
+              digitalWrite(DIR_B, HIGH);
+              analogWrite(PWM_A, r); 
+              analogWrite(PWM_B, r);
+        }
+        else if (b > 4095 && a >= -4096 && a <= 4095){
+          digitalWrite(BRAKE_A, LOW);
+              digitalWrite(BRAKE_B, LOW);
+              digitalWrite(DIR_A, HIGH);
+              digitalWrite(DIR_B, LOW);
+              analogWrite(PWM_A, r); 
+              analogWrite(PWM_B, r);
+        }
+        else {
+          digitalWrite(BRAKE_A, LOW);
+              digitalWrite(BRAKE_B, LOW);
+              digitalWrite(DIR_A, LOW);
+              digitalWrite(DIR_B, HIGH);
+              analogWrite(PWM_A, r); 
+              analogWrite(PWM_B, r);
+        }
+
           if (a > 4095){                             //Stick is pointed right
             if (b > 4095){
               digitalWrite(BRAKE_A, LOW);
               digitalWrite(BRAKE_B, LOW);
               digitalWrite(DIR_A, HIGH);
               digitalWrite(DIR_B, LOW);
-              analogWrite(PWM_A, r); 
-              analogWrite(PWM_B, l);
+              analogWrite(PWM_A, l); 
+              analogWrite(PWM_B, r);
             }
-            else if (b < -4096){
+            else //if (b < -4096)
+            {
               digitalWrite(BRAKE_A, LOW);
               digitalWrite(BRAKE_B, LOW);
               digitalWrite(DIR_A, LOW);
@@ -186,14 +220,14 @@ void loop() {
               analogWrite(PWM_A, r); 
               analogWrite(PWM_B, l);
             }
-            else{                                   //Tank turn Right
+           /* else{                                   //Tank turn Right
               digitalWrite(BRAKE_A, LOW);
               digitalWrite(BRAKE_B, LOW);
               digitalWrite(DIR_A, LOW);
               digitalWrite(DIR_B, LOW);
               analogWrite(PWM_A, f); 
               analogWrite(PWM_B, f);
-            }
+            }*/
           }
           else if (a < -4096){                      //Stick is pointed left
             if (b > 4095){
@@ -204,7 +238,8 @@ void loop() {
               analogWrite(PWM_A, r); 
               analogWrite(PWM_B, l);
             }
-            else if (b < -4096){
+            else //if (b < -4096)
+            {
               digitalWrite(BRAKE_A, LOW);
               digitalWrite(BRAKE_B, LOW);
               digitalWrite(DIR_A, LOW);
@@ -212,37 +247,37 @@ void loop() {
               analogWrite(PWM_A, r); 
               analogWrite(PWM_B, l);
             }
-            else{                                   //Tank turn Left
+           /* else{                                   //Tank turn Left
               digitalWrite(BRAKE_A, LOW);
               digitalWrite(BRAKE_B, LOW);
               digitalWrite(DIR_A, HIGH);
               digitalWrite(DIR_B, HIGH);
               analogWrite(PWM_A, f); 
               analogWrite(PWM_B, f);
-            }
+            }*/
           }
-          else{                                   //Stick pointed Up, Forwards
+         /* else{                                   //Stick pointed Up, Forwards
             if(b > 4095){
               digitalWrite(BRAKE_A, LOW);
               digitalWrite(BRAKE_B, LOW);
               digitalWrite(DIR_A, HIGH);
               digitalWrite(DIR_B, LOW);
-              analogWrite(PWM_A, round(b/128)); 
-              analogWrite(PWM_B, round(b/128));
+              analogWrite(PWM_A, r); 
+              analogWrite(PWM_B, r);
             }
             else if(b < -4096){                           //Stick pointed Down, Backwards
               digitalWrite(BRAKE_A, LOW);
               digitalWrite(BRAKE_B, LOW);
               digitalWrite(DIR_A, LOW);
               digitalWrite(DIR_B, HIGH);
-              analogWrite(PWM_A, round(b/128)); 
-              analogWrite(PWM_B, round(b/128));
-            }
-            else{                              //Stick is in the centre, Stop
+              analogWrite(PWM_A, r); 
+              analogWrite(PWM_B, r);
+            }*/
+            else if (a <= 4095 && a >= -4096 && b <= 4095 && b >= -4096){                              //Stick is in the centre, Stop
               digitalWrite(BRAKE_A, HIGH);
               digitalWrite(BRAKE_B, HIGH);
             }
-          }
+        //  }
         
         /*if(b>3000){
           digitalWrite(BRAKE_A, LOW);
@@ -277,63 +312,51 @@ void loop() {
           digitalWrite(DIR_A, LOW);
           digitalWrite(DIR_B, HIGH);
         }
-
         r=(c-a)/128;
         l=(c-b)/128;
         
         analogWrite(PWM_A, r); 
         analogWrite(PWM_B, l);
         
-
         //chris code
-
   /*     
         posX1 = map(Xbox.getAnalogHat(RightHatX, i), -32768, 32767, -255, 255);
         posY1 = map(Xbox.getAnalogHat(RightHatY, i), -32768, 32767, 255, -255);
         posY2 = map(Xbox.getAnalogHat(RightHatY, i), -32768, 32767, -255, 255);
-
         analogWrite(PWM_A, (-posX1+posY1)); 
         analogWrite(PWM_B, (-posX1+posY1));
 */
   /*
         int x_axis = AnalogRead(0); // value of X-Axis joystick (0-1023, 512 = centered)
   int y_axis = AnalogRead(1); // value of Y-Axis joystick (0-1023, 512 = centered)
-
   // filter out a centered joystick - no action
   if (x_axis < 510 || x_axis > 514) {
     if (y_axis < 510 || y_axis > 514) {
       // Map values from potentiometers to a smaller range for the PWM motor controllers (0-255)
       x_axis = map(x_axis, 0, 1023, 0, 255);
       y_axis = map(y_axis, 0, 1023, 0, 255);
-
       int ly_axis = y_axis;
       int ry_axis = y_axis;
-
       if (x_axis < 126) { // turning left, so slow-down left track
         if (y_axis > 130) { // moving forward
           ly_axis -= (255 - x_axis); // decreasing the value - moving it closer to the center-point - slows it down
         }
-
         if (y_axis < 126) { // moving in reverse
           ly_axis += (255 - x_axis); // increasing the value - moving it closer to the center-point - slows it down
         }
       }
-
       if (x_axis > 130) { // turning right, so slow-down right track
         if (y_axis > 130) { // moving forward
           ry_axis -= (255 - x_axis); // decreasing the value - moving it closer to the center-point - slows it down
         }
-
         if (y_axis < 126) { // moving in reverse
           ry_axis += (255 - x_axis); // increasing the value - moving it closer to the center-point - slows it down
         }
       }
-
       l_track.write(ly_axis); // here we assume that values > 128 = forward, and < 128 = reverse for the left track motor controller
       r_track.write(ry_axis); // here we assume that values > 128 = forward, and < 128 = reverse for the right track motor controller
     }
   }
-
   // center both PWM values if the joystick is centered (bringing both motor controllers and tracks to a stop)
   if (x_axis >= 510 || x_axis <= 514) {
     if (y_axis >= 510 || y_axis <= 514) {
@@ -451,7 +474,7 @@ void loop() {
               myOtherMotor->run(FORWARD);
          }
 */
-
+        
         if (Xbox.getButtonClick(UP, i)) {
           Xbox.setLedOn(LED1, i);
           Serial.println(F("Up"));
