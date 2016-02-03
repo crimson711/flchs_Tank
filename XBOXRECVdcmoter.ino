@@ -31,6 +31,7 @@ int pos2 = 0;
 int i = 0;
 int r = 0;
 int l = 0;
+int f = 0;
 int a = 0;
 int b = 0;
 int c = 0;
@@ -162,8 +163,9 @@ void loop() {
         Serial.print("Speed: ");
         Serial.println(c/128);
         
-        r=round(c/128);
-        l=round(b/128);
+        r=abs(round(c/128));
+        l=abs(round(b/128));
+        f=abs(round(a/128));
 
         //Must Fix Down-Right and Up-Left
 
@@ -189,8 +191,8 @@ void loop() {
               digitalWrite(BRAKE_B, LOW);
               digitalWrite(DIR_A, LOW);
               digitalWrite(DIR_B, LOW);
-              analogWrite(PWM_A, round(a/128)); 
-              analogWrite(PWM_B, round(a/128));
+              analogWrite(PWM_A, f); 
+              analogWrite(PWM_B, f);
             }
           }
           else if (a < -4096){                      //Stick is pointed left
@@ -215,8 +217,8 @@ void loop() {
               digitalWrite(BRAKE_B, LOW);
               digitalWrite(DIR_A, HIGH);
               digitalWrite(DIR_B, HIGH);
-              analogWrite(PWM_A, round(a/128)); 
-              analogWrite(PWM_B, round(a/128));
+              analogWrite(PWM_A, f); 
+              analogWrite(PWM_B, f);
             }
           }
           else{                                   //Stick pointed Up, Forwards
