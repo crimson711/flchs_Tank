@@ -133,7 +133,7 @@ void loop() {
         }
         //mathew's code
         
-
+/*
         a = Xbox.getAnalogHat(LeftHatX, i);
         b = Xbox.getAnalogHat(LeftHatY, i);
         c = (int) (sqrt(pow(abs(a), 2) + pow(abs(b), 2)));
@@ -145,46 +145,18 @@ void loop() {
         f=abs(round(a/128));
 
         //Must Fix Down-Right and Up-Left
+        if ((a <= 4095 && a >= -4096) && (b <= 4095 && b >= -4096)){                              //Stick is in the centre, Stop
+              digitalWrite(BRAKE_A, HIGH);
+              digitalWrite(BRAKE_B, HIGH);
+            }
 
-        if (a > 4095 && b >= -4096 && b <= 4095){
-          digitalWrite(BRAKE_A, LOW);
-              digitalWrite(BRAKE_B, LOW);
-              digitalWrite(DIR_A, HIGH);
-              digitalWrite(DIR_B, LOW);
-              analogWrite(PWM_A, r); 
-              analogWrite(PWM_B, r);
-        }
-        else if (a < -4096 && b >= -4096 && b <= 4095){
-          digitalWrite(BRAKE_A, LOW);
-              digitalWrite(BRAKE_B, LOW);
-              digitalWrite(DIR_A, HIGH);
-              digitalWrite(DIR_B, HIGH);
-              analogWrite(PWM_A, r); 
-              analogWrite(PWM_B, r);
-        }
-        else if (b > 4095 && a >= -4096 && a <= 4095){
-          digitalWrite(BRAKE_A, LOW);
-              digitalWrite(BRAKE_B, LOW);
-              digitalWrite(DIR_A, HIGH);
-              digitalWrite(DIR_B, LOW);
-              analogWrite(PWM_A, r); 
-              analogWrite(PWM_B, r);
-        }
-        else {
-          digitalWrite(BRAKE_A, LOW);
-              digitalWrite(BRAKE_B, LOW);
-              digitalWrite(DIR_A, LOW);
-              digitalWrite(DIR_B, HIGH);
-              analogWrite(PWM_A, r); 
-              analogWrite(PWM_B, r);
-        }
-
+        
           if (a > 4095){                             //Stick is pointed right
             if (b > 4095){
               digitalWrite(BRAKE_A, LOW);
               digitalWrite(BRAKE_B, LOW);
               digitalWrite(DIR_A, HIGH);
-              digitalWrite(DIR_B, LOW);
+              digitalWrite(DIR_B,HIGH);
               analogWrite(PWM_A, l); 
               analogWrite(PWM_B, r);
             }
@@ -192,25 +164,17 @@ void loop() {
             {
               digitalWrite(BRAKE_A, LOW);
               digitalWrite(BRAKE_B, LOW);
-              digitalWrite(DIR_A, LOW);
+              digitalWrite(DIR_A, HIGH);
               digitalWrite(DIR_B, HIGH);
               analogWrite(PWM_A, r); 
               analogWrite(PWM_B, l);
             }
-           /* else{                                   //Tank turn Right
-              digitalWrite(BRAKE_A, LOW);
-              digitalWrite(BRAKE_B, LOW);
-              digitalWrite(DIR_A, LOW);
-              digitalWrite(DIR_B, LOW);
-              analogWrite(PWM_A, f); 
-              analogWrite(PWM_B, f);
-            }*/
           }
-          else if (a < -4096){                      //Stick is pointed left
+          if (a < -4096){                      //Stick is pointed left
             if (b > 4095){
               digitalWrite(BRAKE_A, LOW);
               digitalWrite(BRAKE_B, LOW);
-              digitalWrite(DIR_A, HIGH);
+              digitalWrite(DIR_A, LOW);
               digitalWrite(DIR_B, LOW);
               analogWrite(PWM_A, r); 
               analogWrite(PWM_B, l);
@@ -220,30 +184,53 @@ void loop() {
               digitalWrite(BRAKE_A, LOW);
               digitalWrite(BRAKE_B, LOW);
               digitalWrite(DIR_A, LOW);
-              digitalWrite(DIR_B, HIGH);
-              analogWrite(PWM_A, r); 
-              analogWrite(PWM_B, l);
+              digitalWrite(DIR_B, LOW);
+              analogWrite(PWM_A, l); 
+              analogWrite(PWM_B, r);
             }
-           /* else{                                   //Tank turn Left
-              digitalWrite(BRAKE_A, LOW);
+
+          }
+          if (a > 4095 && b >= -4096 && b <= 4095){
+          digitalWrite(BRAKE_A, LOW);
               digitalWrite(BRAKE_B, LOW);
               digitalWrite(DIR_A, HIGH);
               digitalWrite(DIR_B, HIGH);
-              analogWrite(PWM_A, f); 
-              analogWrite(PWM_B, f);
-            }*/
-          }
-            else if (a <= 4095 && a >= -4096 && b <= 4095 && b >= -4096){                              //Stick is in the centre, Stop
-              digitalWrite(BRAKE_A, HIGH);
-              digitalWrite(BRAKE_B, HIGH);
-            }
+              analogWrite(PWM_A, r); 
+              analogWrite(PWM_B, r);
+        }
+        else if (a < -4096 && b >= -4096 && b <= 4095){
+          digitalWrite(BRAKE_A, LOW);
+              digitalWrite(BRAKE_B, LOW);
+              digitalWrite(DIR_A, LOW);
+              digitalWrite(DIR_B, LOW);
+              analogWrite(PWM_A, r); 
+              analogWrite(PWM_B, r);
+        }
+        else if (b > 4095 && a >= -4096 && a <= 4095){
+          digitalWrite(BRAKE_A, LOW);
+              digitalWrite(BRAKE_B, LOW);
+              digitalWrite(DIR_A, LOW);
+              digitalWrite(DIR_B, HIGH);
+              analogWrite(PWM_A, l); 
+              analogWrite(PWM_B, l);
+        }
+        else {
+          digitalWrite(BRAKE_A, LOW);
+              digitalWrite(BRAKE_B, LOW);
+              digitalWrite(DIR_A, HIGH);
+              digitalWrite(DIR_B, LOW);
+              analogWrite(PWM_A, l); 
+              analogWrite(PWM_B, l);
+        }
+
+     //       else 
         
         r=(c-a)/128;
         l=(c-b)/128;
         
         analogWrite(PWM_A, r); 
         analogWrite(PWM_B, l);
-        
+*/        
         //chris code
   /*     
         posX1 = map(Xbox.getAnalogHat(RightHatX, i), -32768, 32767, -255, 255);
@@ -252,7 +239,7 @@ void loop() {
         analogWrite(PWM_A, (-posX1+posY1)); 
         analogWrite(PWM_B, (-posX1+posY1));
 */
-  /*
+  
         int x_axis = AnalogRead(0); // value of X-Axis joystick (0-1023, 512 = centered)
   int y_axis = AnalogRead(1); // value of Y-Axis joystick (0-1023, 512 = centered)
   // filter out a centered joystick - no action
@@ -289,7 +276,7 @@ void loop() {
       l_track.write(128);
       r_track.write(128);
  
-         */
+         
         //end
         /*if(r==l){
           digitalWrite(BRAKE_A, LOW);  // setting brake LOW disable motor brake
