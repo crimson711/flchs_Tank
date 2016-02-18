@@ -159,14 +159,13 @@ bool readJoystickInput() {
         if (RightHatY_Raw < 7500 && RightHatY_Raw > -7500) RightHatY_Raw = 0;
         
         // debug printout
+        /*
         Serial.print("LX:");
         Serial.print(LeftHatX_Raw);
         Serial.print(" LY:");
         Serial.print(LeftHatY_Raw);
         Serial.print(" RX:");
         Serial.print(RightHatX_Raw);
-        Serial.print(" RY:");
-        Serial.print(RightHatY_Raw);
         Serial.print(" RY:");
         Serial.print(RightHatY_Raw);
         
@@ -200,10 +199,11 @@ bool readJoystickInput() {
         Serial.print((X_State) ? 1 : 0);
         Serial.print(" Y:");
         Serial.println((Y_State) ? 1 : 0);
+        */
         // debug printout end
         
         /** Analog reading is from -32768 (left/down) to 32767 (right/up) **/
-        // convert raw value into useable value (-255 - +255)
+        /** convert raw value into useable value (-255 - +255) **/
         left_x = map(LeftHatX_Raw, -32768, 32767, -255, 255);
         left_y = map(LeftHatY_Raw, -32768, 32767, -255, 255);
         
@@ -225,22 +225,62 @@ void updateMotorSpeed() {
   
   static int old_speed_left,
              old_speed_right;
+
+  /*
+  Serial.print(" L X: ");
+  Serial.print(left_x);
+  Serial.print(" L Y: ");
+  Serial.print(left_y);
+  */
+
+  /** mix x and y to get differential drive **/
+  int speed_left_raw = left_y - left_x;
+  int speed_right_raw = left_y + left_x;
+
+  /** determine max value from calculation above **/
+  int speed_scale = max(abs(speed_left_raw), abs(speed_right_raw));
+  speed_scale = max(255, speed_scale);
+
+  /*
+  Serial.print(" L X: ");
+  Serial.print(speed_left_raw);
+  Serial.print(" L Y: ");
+  Serial.print(speed_right_raw);
   
-  int speed_left = left_x;
-  int speed_right = left_x;
+  Serial.print(" Scale: ");
+  Serial.print(speed_scale);
+  */
+
+  int speed_left = (int) (float) speed_left_raw / (float) speed_scale * 255.0;
+  int speed_right = (int) (float) speed_right_raw / (float) speed_scale * 255.0;
+
+  speed_left = constrain(speed_left, -255, 255);
+  speed_right = constrain(speed_right, -255, 255);
+
+  /*
+  Serial.print(" L Speed: ");
+  Serial.print(speed_left);
+  Serial.print(" R Speed: ");
+  Serial.println(speed_right);
+  */
   
   // update motor speed only if there are change
   if (speed_left != old_speed_left || speed_right != old_speed_right) {
-    if (left_x > 0) {
+    
+    if (speed_left > 0) {
       digitalWrite(DIR_A, HIGH);
-      digitalWrite(DIR_B, HIGH);
     } else {
       digitalWrite(DIR_A, LOW);
-      digitalWrite(DIR_B, LOW);
     }
     
-    analogWrite(PWM_A, speed_left);
-    analogWrite(PWM_B, speed_right);
+    if (speed_right > 0) {
+      digitalWrite(DIR_B, LOW);
+    } else {
+      digitalWrite(DIR_B, HIGH);
+    }
+    
+    analogWrite(PWM_A, abs(speed_left));
+    analogWrite(PWM_B, abs(speed_right));
   }
   
   old_speed_left = speed_left;
