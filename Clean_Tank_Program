@@ -121,28 +121,6 @@ void loop() {
           Serial.println();
         }
 
-
-        /*pos = map(Xbox.getAnalogHat(LeftHatX, i), -32768, 32767, -255, 255);
-        pos2 = map(Xbox.getAnalogHat(LeftHatY, i), -32768, 32767, -255, 255);
-        
-        if(pos>0){
-          digitalWrite(DIR_A, HIGH);   // setting direction to HIGH the motor will spin forward
-          digitalWrite(DIR_B, LOW);   // setting direction to HIGH the motor will spin forward
-        }
-                if(pos<0){
-          digitalWrite(DIR_A, LOW);   // setting direction to HIGH the motor will spin forward
-          digitalWrite(DIR_B, HIGH);   // setting direction to HIGH the motor will spin forward
-        }
-        
-        //Serial.print("pos: "+pos);
-        //Serial.println("pos2: "+pos2);
-        
-       // pos = 1/pos;
-       /* v = (256-abs(pos)) * (pos2/256) + pos2;
-        w = (256-abs(pos2)) * (pos/256) + pos;
-        r = (v+w)/2;
-        l = (v-w)/2;*/
-
         Serial.print("Speed: ");
         Serial.print(pos);
         Serial.print(" and ");
@@ -255,62 +233,11 @@ void loop() {
               analogWrite(PWM_B, f);
             }*/
           }
-         /* else{                                   //Stick pointed Up, Forwards
-            if(b > 4095){
-              digitalWrite(BRAKE_A, LOW);
-              digitalWrite(BRAKE_B, LOW);
-              digitalWrite(DIR_A, HIGH);
-              digitalWrite(DIR_B, LOW);
-              analogWrite(PWM_A, r); 
-              analogWrite(PWM_B, r);
-            }
-            else if(b < -4096){                           //Stick pointed Down, Backwards
-              digitalWrite(BRAKE_A, LOW);
-              digitalWrite(BRAKE_B, LOW);
-              digitalWrite(DIR_A, LOW);
-              digitalWrite(DIR_B, HIGH);
-              analogWrite(PWM_A, r); 
-              analogWrite(PWM_B, r);
-            }*/
             else if (a <= 4095 && a >= -4096 && b <= 4095 && b >= -4096){                              //Stick is in the centre, Stop
               digitalWrite(BRAKE_A, HIGH);
               digitalWrite(BRAKE_B, HIGH);
             }
-        //  }
         
-        /*if(b>3000){
-          digitalWrite(BRAKE_A, LOW);
-          digitalWrite(BRAKE_B, LOW);
-          digitalWrite(DIR_A, HIGH);
-          digitalWrite(DIR_B, LOW);
-        }
-        else if(b<-3000){
-         digitalWrite(BRAKE_A, LOW);
-         digitalWrite(BRAKE_B, LOW);
-         digitalWrite(DIR_A, LOW);
-         digitalWrite(DIR_B, HIGH);
-        }
-        else{
-        digitalWrite(BRAKE_A, HIGH);
-        digitalWrite(BRAKE_B, HIGH);
-        }
-        
-        if(a>=32767-512){
-          digitalWrite(DIR_A, LOW);
-          digitalWrite(DIR_B, HIGH);
-        }
-        if(a<=-32768+512){
-          digitalWrite(DIR_A, HIGH);
-          digitalWrite(DIR_B, LOW);
-        }
-        if(b>=32767-512){
-          digitalWrite(DIR_A, HIGH);
-          digitalWrite(DIR_B, LOW);
-        }
-        if(b<=-32767+512){
-          digitalWrite(DIR_A, LOW);
-          digitalWrite(DIR_B, HIGH);
-        }
         r=(c-a)/128;
         l=(c-b)/128;
         
