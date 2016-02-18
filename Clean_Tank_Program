@@ -42,18 +42,6 @@ int posY2=0;
 //int w = 0;
 //int v = 0;
 
-/*#include <Wire.h>
-#include <Adafruit_MotorShield.h>
-#include "utility/Adafruit_PWMServoDriver.h"
-// Create the motor shield object with the default I2C address
-Adafruit_MotorShield AFMS = Adafruit_MotorShield(); 
-// Or, create it with a different I2C address (say for stacking)
-// Adafruit_MotorShield AFMS = Adafruit_MotorShield(0x61); 
-// Select which 'port' M1, M2, M3 or M4. In this case, M1
-Adafruit_DCMotor *myMotor = AFMS.getMotor(1);
-// You can also make another motor on port M2
-Adafruit_DCMotor *myOtherMotor = AFMS.getMotor(3);*/
-
 void setup() {
   Serial.begin(115200);
     //Serial.begin(9600);           // set up Serial library at 9600 bps
@@ -72,16 +60,6 @@ void setup() {
   pinMode(DIR_A, OUTPUT);    // Direction pin on channel A
   pinMode(BRAKE_B, OUTPUT);  // Brake pin on channel B
   pinMode(DIR_B, OUTPUT);    // Direction pin on channel B
-
-  
-  /*AFMS.begin();  // create with the default frequency 1.6KHz
-  //AFMS.begin(1000);  // OR with a different frequency, say 1KHz
-  
-  // Set the speed to start, from 0 (off) to 255 (max speed)
-  myMotor->setSpeed(150);
-  myMotor->run(FORWARD);
-  // turn on motor
-  myMotor->run(RELEASE);*/
 }
 
 void loop() {
@@ -240,29 +218,29 @@ void loop() {
         analogWrite(PWM_B, (-posX1+posY1));
 */
   
-        int x_axis = AnalogRead(0); // value of X-Axis joystick (0-1023, 512 = centered)
-  int y_axis = AnalogRead(1); // value of Y-Axis joystick (0-1023, 512 = centered)
+        int x_axis = Xbox.getAnalogHat(LeftHatX, i); // value of X-Axis joystick (0-1023, 512 = centered)
+  int y_axis = Xbox.getAnalogHat(LeftHatY, i); // value of Y-Axis joystick (0-1023, 512 = centered)
   // filter out a centered joystick - no action
-  if (x_axis < 510 || x_axis > 514) {
-    if (y_axis < 510 || y_axis > 514) {
+  if (x_axis < 510*32 || x_axis > 514*32) {
+    if (y_axis < 510*32 || y_axis > 514*32) {
       // Map values from potentiometers to a smaller range for the PWM motor controllers (0-255)
-      x_axis = map(x_axis, 0, 1023, 0, 255);
-      y_axis = map(y_axis, 0, 1023, 0, 255);
+      x_axis = map(x_axis, 0, 1023*32, 0, 255);
+      y_axis = map(y_axis, 0, 1023*32, 0, 255);
       int ly_axis = y_axis;
       int ry_axis = y_axis;
-      if (x_axis < 126) { // turning left, so slow-down left track
-        if (y_axis > 130) { // moving forward
+      if (x_axis < 126*32) { // turning left, so slow-down left track
+        if (y_axis > 130*32) { // moving forward
           ly_axis -= (255 - x_axis); // decreasing the value - moving it closer to the center-point - slows it down
         }
-        if (y_axis < 126) { // moving in reverse
+        if (y_axis < 126*32) { // moving in reverse
           ly_axis += (255 - x_axis); // increasing the value - moving it closer to the center-point - slows it down
         }
       }
-      if (x_axis > 130) { // turning right, so slow-down right track
-        if (y_axis > 130) { // moving forward
+      if (x_axis > 130*32) { // turning right, so slow-down right track
+        if (y_axis > 130*32) { // moving forward
           ry_axis -= (255 - x_axis); // decreasing the value - moving it closer to the center-point - slows it down
         }
-        if (y_axis < 126) { // moving in reverse
+        if (y_axis < 126*32) { // moving in reverse
           ry_axis += (255 - x_axis); // increasing the value - moving it closer to the center-point - slows it down
         }
       }
@@ -271,122 +249,14 @@ void loop() {
     }
   }
   // center both PWM values if the joystick is centered (bringing both motor controllers and tracks to a stop)
-  if (x_axis >= 510 || x_axis <= 514) {
-    if (y_axis >= 510 || y_axis <= 514) {
+  if (x_axis >= 510*32 || x_axis <= 514*32) {
+    if (y_axis >= 510*32 || y_axis <= 514*32) {
       l_track.write(128);
       r_track.write(128);
  
          
         //end
-        /*if(r==l){
-          digitalWrite(BRAKE_A, LOW);  // setting brake LOW disable motor brake
-            digitalWrite(DIR_A, HIGH);   // setting direction to HIGH the motor will spin forward
-            analogWrite(PWM_A, r); 
-            analogWrite(PWM_B, l); 
-        }*/
         
-        
-        
-        /*if (r>0){
-            digitalWrite(BRAKE_A, LOW);  // setting brake LOW disable motor brake
-            digitalWrite(DIR_A, HIGH);   // setting direction to HIGH the motor will spin forward
-            analogWrite(PWM_A, r); 
-          
-        }
-        else if (r<0){
-           digitalWrite(BRAKE_A, LOW);  // setting againg the brake LOW to disable motor brake
-           digitalWrite(DIR_A, LOW);    // now change the direction to backward setting LOW the DIR_A pin
-           analogWrite(PWM_A, r);     // Set the speed of the motor
-        }
-        else {
-           digitalWrite(BRAKE_A, HIGH);
-        }
-         if (l>0){
-          digitalWrite(BRAKE_B, LOW);  // setting brake LOW disable motor brake
-          digitalWrite(DIR_B, LOW);   // setting direction to HIGH the motor will spin forward
-          analogWrite(PWM_B, l);
-        }
-        else if (l<0){
-          digitalWrite(BRAKE_B, LOW);  // setting againg the brake LOW to disable motor brake
-          digitalWrite(DIR_B, HIGH);    // now change the direction to backward setting LOW the DIR_A pin
-          analogWrite(PWM_B, l);     // Set the speed of the motor
-        }
-        else {
-          digitalWrite(BRAKE_A, HIGH);
-        }
-     /*   
-         if (Xbox.getAnalogHat(LeftHatX, i) < 32639){
-            if (Xbox.getAnalogHat(LeftHatX, i) > -32640){
-              if (Xbox.getAnalogHat(LeftHatY, i) < 2047 && Xbox.getAnalogHat(LeftHatY, i) > -2048/* || Xbox.getAnalogHat(LeftHatX, i) < 2047 && Xbox.getAnalogHat(LeftHatX, i) > -2048*/ /*){
-     /*           myMotor->run(RELEASE);
-              myOtherMotor->run(RELEASE);
-              }
-           }
-         }
-*/
-       //  if (Xbox.getAnalogHat(LeftHatY, i) >= 2047 /*|| Xbox.getAnalogHat(LeftHatY, i) < 0*/ /*){ */
-        // pos = map(Xbox.getAnalogHat(LeftHatY, i), /*-32768*/ /*-32768*/0, 32767, /*-256*/ 0, 255);
-         /* Serial.print(F("pos: "));
-          Serial.println(pos);
-                myMotor->setSpeed(pos);
-                myOtherMotor->setSpeed(pos);
-                delay(10);
-                myMotor->run(FORWARD);
-              myOtherMotor->run(FORWARD);
-         }
-         if (Xbox.getAnalogHat(LeftHatY, i) <= -2048){
-         pos = map(Xbox.getAnalogHat(LeftHatY, i), 0, -32768, 0, 255);
-          Serial.print(F("pos: "));
-          Serial.println(pos);
-                myMotor->setSpeed(pos);
-                myOtherMotor->setSpeed(pos);
-                delay(10);
-                myMotor->run(BACKWARD);
-              myOtherMotor->run(BACKWARD);
-         }
-         
-         if (Xbox.getAnalogHat(LeftHatX, i) > 2048 && Xbox.getAnalogHat(LeftHatY, i) > -2048 && Xbox.getAnalogHat(LeftHatY, i) < 2047){
-         pos2 = map(Xbox.getAnalogHat(LeftHatX, i), 0, 32767, 0, 255);
-          Serial.print(F("pos: "));
-          Serial.println(pos);
-                myMotor->setSpeed(pos2);
-                myOtherMotor->setSpeed(pos2);
-                delay(10);
-                myMotor->run(BACKWARD);
-              myOtherMotor->run(FORWARD);
-         }
-         
-         if (Xbox.getAnalogHat(LeftHatX, i) < -2048 && Xbox.getAnalogHat(LeftHatY, i) > -2048 && Xbox.getAnalogHat(LeftHatY, i) < 2047){
-         pos2 = map(Xbox.getAnalogHat(LeftHatX, i), 0, 32767, 0, 255);
-          Serial.print(F("pos: "));
-          Serial.println(pos);
-                myMotor->setSpeed(pos2);
-                myOtherMotor->setSpeed(pos2);
-                delay(10);
-                myMotor->run(FORWARD);
-              myOtherMotor->run(BACKWARD);
-         }
-         if (Xbox.getAnalogHat(LeftHatX, i) > 2047 && Xbox.getAnalogHat(LeftHatY, i) <= -2048 && Xbox.getAnalogHat(LeftHatY, i) >= 2047){
-         pos2 = map(Xbox.getAnalogHat(LeftHatX, i), 0, 32767, 0, 255);
-          Serial.print(F("pos: "));
-          Serial.println(pos);
-                myMotor->setSpeed(pos);
-                myOtherMotor->setSpeed(pos2);
-                delay(10);
-                myMotor->run(FORWARD);
-              myOtherMotor->run(FORWARD);
-         }
-         if (Xbox.getAnalogHat(LeftHatX, i) < -2048 && Xbox.getAnalogHat(LeftHatY, i) <= -2048 && Xbox.getAnalogHat(LeftHatY, i) >= 2047){
-         pos2 = map(Xbox.getAnalogHat(LeftHatX, i), 0, -32768, 0, 255);
-          Serial.print(F("pos: "));
-          Serial.println(pos);
-                myMotor->setSpeed(pos2);
-                myOtherMotor->setSpeed(pos);
-                delay(10);
-                myMotor->run(FORWARD);
-              myOtherMotor->run(FORWARD);
-         }
-*/
         
         if (Xbox.getButtonClick(UP, i)) {
           Xbox.setLedOn(LED1, i);
