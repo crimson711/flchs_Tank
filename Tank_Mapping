@@ -11,7 +11,6 @@
 #ifdef dobogusinclude
 #include <spi4teensy3.h>
 #include <SPI.h>
-#include "Timer.h"
 #endif
 
 USB Usb;
@@ -36,9 +35,7 @@ A - Actuator Pre-set 1
 B - Actuator Pre-set 2
 X - Actuator Pre-set 3
 Y - Actuator Pre-set 4
-Timer t;
 **/
-
 
 /** pin definition **/
 const int PWM_A   = 3,
@@ -288,29 +285,32 @@ void updateMotorSpeed() {
   
   if (Up_State==1){
     digitalWrite(DIR_A, HIGH);
-    digitalWrite(DIR_B, HIGH);
+    digitalWrite(DIR_B, LOW);
     analogWrite(PWM_A, 255);
     analogWrite(PWM_B, 255);
   }
   if (Down_State==1){
     digitalWrite(DIR_A, LOW);
-    digitalWrite(DIR_B, LOW);
+    digitalWrite(DIR_B, HIGH);
     analogWrite(PWM_A, 255);
     analogWrite(PWM_B, 255);
   }
   if (Left_State==1){
-    t.pulse(1*1000);
     digitalWrite(DIR_A, HIGH);
-    digitalWrite(DIR_B, LOW);
+    digitalWrite(DIR_B, HIGH);
     analogWrite(PWM_A, 255);
     analogWrite(PWM_B, 255);
     
   }
   if (Right_State==1){
-    t.pulse(1*1000);
     digitalWrite(DIR_A, LOW);
-    digitalWrite(DIR_B, HIGH);
+    digitalWrite(DIR_B, LOW);
     analogWrite(PWM_A, 255);
     analogWrite(PWM_B, 255);
   }
+  if (B_State==1){
+    analogWrite(PWM_A, 0);
+    analogWrite(PWM_B, 0);
+  }
+
 }
