@@ -11,6 +11,7 @@
 #ifdef dobogusinclude
 #include <spi4teensy3.h>
 #include <SPI.h>
+#include "Timer.h"
 #endif
 
 USB Usb;
@@ -35,6 +36,7 @@ A - Actuator Pre-set 1
 B - Actuator Pre-set 2
 X - Actuator Pre-set 3
 Y - Actuator Pre-set 4
+Timer t;
 **/
 
 
@@ -285,35 +287,30 @@ void updateMotorSpeed() {
   old_speed_right = speed_right;
   
   if (Up_State==1){
-    for(int i=0; i>1000; i++){
-      digitalWrite(DIR_A, HIGH);
-      digitalWrite(DIR_B, HIGH);
-      analogWrite(PWM_A, 255);
-      analogWrite(PWM_B, 255);
-    }
+    digitalWrite(DIR_A, HIGH);
+    digitalWrite(DIR_B, HIGH);
+    analogWrite(PWM_A, 255);
+    analogWrite(PWM_B, 255);
   }
   if (Down_State==1){
-    for(int i=0; i>1000; i++){
-      digitalWrite(DIR_A, LOW);
-      digitalWrite(DIR_B, LOW);
-      analogWrite(PWM_A, 255);
-      analogWrite(PWM_B, 255);
-    }
+    digitalWrite(DIR_A, LOW);
+    digitalWrite(DIR_B, LOW);
+    analogWrite(PWM_A, 255);
+    analogWrite(PWM_B, 255);
   }
   if (Left_State==1){
-    for(int i=0; i>1000; i++){
-      digitalWrite(DIR_A, HIGH);
-      digitalWrite(DIR_B, LOW);
-      analogWrite(PWM_A, 255);
-      analogWrite(PWM_B, 255);
-    }
+    t.pulse(1*1000);
+    digitalWrite(DIR_A, HIGH);
+    digitalWrite(DIR_B, LOW);
+    analogWrite(PWM_A, 255);
+    analogWrite(PWM_B, 255);
+    
   }
   if (Right_State==1){
-    for(int i=0; i>1000; i++){
-      digitalWrite(DIR_A, LOW);
-      digitalWrite(DIR_B, HIGH);
-      analogWrite(PWM_A, 255);
-      analogWrite(PWM_B, 255);
-    }
+    t.pulse(1*1000);
+    digitalWrite(DIR_A, LOW);
+    digitalWrite(DIR_B, HIGH);
+    analogWrite(PWM_A, 255);
+    analogWrite(PWM_B, 255);
   }
 }
