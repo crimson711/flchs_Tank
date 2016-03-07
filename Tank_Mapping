@@ -1,4 +1,4 @@
-/*
+ /*
  Example sketch for the Xbox Wireless Reciver library - developed by Kristian Lauszus
  It supports up to four controllers wirelessly
  For more information see the blog post: http://blog.tkjelectronics.dk/2012/12/xbox-360-receiver-added-to-the-usb-host-library/ or
@@ -17,6 +17,8 @@ USB Usb;
 XBOXRECV Xbox(&Usb);
 
 /** ^^^^^^ DO NOT CHANGE ABOVE THIS ^^^^^^^ **/
+
+#include <Servo.h>
 
 /** Concept of Operation
 L1 - 
@@ -76,6 +78,9 @@ int left_x = 0,
     right_x = 0,
     right_y = 0;
 
+Servo myServo;
+Servo myServo2;
+
 void setup() {
   Serial.begin(115200); // set up Serial library at 115200 bps
   
@@ -97,7 +102,9 @@ void setup() {
   pinMode(DIR_A, OUTPUT);    // Direction pin on channel A
   pinMode(BRAKE_B, OUTPUT);  // Brake pin on channel B
   pinMode(DIR_B, OUTPUT);    // Direction pin on channel B
-  
+
+  myServo.attach(12);
+  myServo2.attach(10);
 }
 
 void loop() {
@@ -150,10 +157,12 @@ bool readJoystickInput() {
         RightHatY_Raw = Xbox.getAnalogHat(RightHatY, i);
         
         // Adjust for null zone
-        if (LeftHatX_Raw < 7500 && LeftHatX_Raw > -7500) LeftHatX_Raw = 0;
-        if (LeftHatY_Raw < 7500 && LeftHatY_Raw > -7500) LeftHatY_Raw = 0;
-        if (RightHatX_Raw < 7500 && RightHatX_Raw > -7500) RightHatX_Raw = 0;
-        if (RightHatY_Raw < 7500 && RightHatY_Raw > -7500) RightHatY_Raw = 0;
+        if (LeftHatX_Raw < 1024 && LeftHatX_Raw > -1024) LeftHatX_Raw = 0;
+        if (LeftHatY_Raw < 1024 && LeftHatY_Raw > -1024) LeftHatY_Raw = 0;
+        if (RightHatX_Raw < 1024 && RightHatX_Raw > -1024) RightHatX_Raw = 0;
+        if (RightHatY_Raw < 1024 && RightHatY_Raw > -1024) RightHatY_Raw = 0;
+        B_State=0;
+       
         
         // debug printout
         /*
@@ -207,6 +216,8 @@ bool readJoystickInput() {
         right_x = map(RightHatX_Raw, -32768, 32767, -255, 255);
         right_y = map(RightHatY_Raw, -32768, 32767, -255, 255);
       }
+       else
+        B_State=1;
     }
     
     return true;
@@ -254,6 +265,12 @@ void updateMotorSpeed() {
   speed_left = constrain(speed_left, -255, 255);
   speed_right = constrain(speed_right, -255, 255);
 
+  speed_left = map(speed_left, -255, 255, 0, 180);
+  speed_right= map(speed_right, -255, 255, 0, 180);
+
+  myServo.write(speed_left);
+  myServo2.write(speed_right);
+
   /*
   Serial.print(" L Speed: ");
   Serial.print(speed_left);
@@ -262,7 +279,7 @@ void updateMotorSpeed() {
   */
   
   // update motor speed only if there are change
-  if (speed_left != old_speed_left || speed_right != old_speed_right) {
+/*  if (speed_left != old_speed_left || speed_right != old_speed_right) {
     
     if (speed_left > 0) {
       digitalWrite(DIR_A, HIGH);
@@ -279,10 +296,11 @@ void updateMotorSpeed() {
     analogWrite(PWM_A, abs(speed_left));
     analogWrite(PWM_B, abs(speed_right));
   }
-  
+
   old_speed_left = speed_left;
   old_speed_right = speed_right;
-  
+  */
+  /*
   if (Up_State==1){
     digitalWrite(DIR_A, HIGH);
     digitalWrite(DIR_B, LOW);
@@ -308,9 +326,17 @@ void updateMotorSpeed() {
     analogWrite(PWM_A, 255);
     analogWrite(PWM_B, 255);
   }
-  if (B_State==1){
-    analogWrite(PWM_A, 0);
-    analogWrite(PWM_B, 0);
-  }
+  */
+ /* if (B_State==1){
+    //analogWrite(PWM_A, 0);
+    //analogWrite(PWM_B, 0);
+    // speed_left = 0;
+    // speed_right= 0;
+    speed_left = 90;
+    speed_right= 90;
+    myServo.write(speed_left);
+    myServo2.write(speed_right);
 
-}
+  }*/
+  
+ }
