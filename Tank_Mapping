@@ -76,7 +76,11 @@ int i = 0; // variable to xbox code counter
 int left_x = 0,
     left_y = 0,
     right_x = 0,
-    right_y = 0;
+    right_y = 0,
+    M_speed=0,
+    right_Spd=0,
+    left_Spd=0;
+    
 
 Servo myServo;
 Servo myServo2;
@@ -121,7 +125,7 @@ void loop() {
     Serial.println("USB Joystick Failed/Not Connected!");
   }
   
-  updateMotorSpeed();
+ //updateMotorSpeed();
     
   
 }
@@ -157,10 +161,10 @@ bool readJoystickInput() {
         RightHatY_Raw = Xbox.getAnalogHat(RightHatY, i);
         
         // Adjust for null zone
-        if (LeftHatX_Raw < 1024 && LeftHatX_Raw > -1024) LeftHatX_Raw = 0;
-        if (LeftHatY_Raw < 1024 && LeftHatY_Raw > -1024) LeftHatY_Raw = 0;
-        if (RightHatX_Raw < 1024 && RightHatX_Raw > -1024) RightHatX_Raw = 0;
-        if (RightHatY_Raw < 1024 && RightHatY_Raw > -1024) RightHatY_Raw = 0;
+        if (LeftHatX_Raw < 2048 && LeftHatX_Raw > -2048) LeftHatX_Raw = 0;
+        if (LeftHatY_Raw < 2048 && LeftHatY_Raw > -2048) LeftHatY_Raw = 0;
+        if (RightHatX_Raw < 2048 && RightHatX_Raw > -2048) RightHatX_Raw = 0;
+        if (RightHatY_Raw < 2048 && RightHatY_Raw > -2048) RightHatY_Raw = 0;
         B_State=0;
        
         
@@ -210,22 +214,38 @@ bool readJoystickInput() {
         
         /** Analog reading is from -32768 (left/down) to 32767 (right/up) **/
         /** convert raw value into useable value (-255 - +255) **/
-        left_x = map(LeftHatX_Raw, -32768, 32767, -255, 255);
-        left_y = map(LeftHatY_Raw, -32768, 32767, -255, 255);
+        /*
+        left_x = map(pow(LeftHatX_Raw, 2), pow(-32768, 2), pow(32767, 2), 0, 180);
+        left_y = map(pow(LeftHatY_Raw, 2), pow(-32768, 2), pow(32767, 2), 0, 180);
         
-        right_x = map(RightHatX_Raw, -32768, 32767, -255, 255);
-        right_y = map(RightHatY_Raw, -32768, 32767, -255, 255);
-      }
-       else
+        right_x = map(pow(RightHatX_Raw, 2), pow(-32768, 2), pow(32767, 2), 0, 180);
+        right_y = map(pow(RightHatY_Raw, 2), pow(-32768, 2), pow(32767, 2), 0, 180);
+        */
+        left_Spd=LeftHatX_Raw/(sqrt(2-(1/pow(32768,2) *pow(LeftHatX_Raw,2))));
+        right_Spd=LeftHatY_Raw/(sqrt(2-(1/pow(32768,2)*pow(LeftHatY_Raw,2))));
+        left_x = map(left_Spd,  -32768,  32767,  0, 180);
+        left_y = map(right_Spd,  -32768,  32767,  0, 180);
+        /*
+        M_speed=left_y+left_x
+        
+        if (left_y>0)
+        {
+        right_x=left_x+left_y;
+        right_y=-(left_x-left_y);
+        }
+         else  if (left_y<0)
+        {
+        right_y=left_x+left_y;
+        right_x=-(left_x-left_y);*/
+        }
+  else
         B_State=1;
     }
-    
-    return true;
-    
-  } else {
-    
-    return false;
-    
+    return true;   
+  }
+  else 
+  {  
+    return false; 
   }
 }
 
@@ -242,11 +262,11 @@ void updateMotorSpeed() {
   */
 
   /** mix x and y to get differential drive **/
-  int speed_left_raw = left_y - left_x;
+ /* int speed_left_raw = left_y - left_x;
   int speed_right_raw = left_y + left_x;
 
   /** determine max value from calculation above **/
-  int speed_scale = max(abs(speed_left_raw), abs(speed_right_raw));
+/*  int speed_scale = max(abs(speed_left_raw), abs(speed_right_raw));
   speed_scale = max(255, speed_scale);
 
   /*
@@ -259,7 +279,7 @@ void updateMotorSpeed() {
   Serial.print(speed_scale);
   */
 
-  int speed_left = (int) (float) speed_left_raw / (float) speed_scale * 255.0;
+/*  int speed_left = (int) (float) speed_left_raw / (float) speed_scale * 255.0;
   int speed_right = (int) (float) speed_right_raw / (float) speed_scale * 255.0;
 
   speed_left = constrain(speed_left, -255, 255);
@@ -267,9 +287,9 @@ void updateMotorSpeed() {
 
   speed_left = map(speed_left, -255, 255, 0, 180);
   speed_right= map(speed_right, -255, 255, 0, 180);
-
-  myServo.write(speed_left);
-  myServo2.write(speed_right);
+*/
+  myServo.write(/*speed_left*/left_x);
+  myServo2.write(/*speed_right*/left_y);
 
   /*
   Serial.print(" L Speed: ");
@@ -338,5 +358,5 @@ void updateMotorSpeed() {
     myServo2.write(speed_right);
 
   }*/
-  
- }
+
+}
